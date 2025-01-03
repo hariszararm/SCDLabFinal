@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attendance-service
+  labels:
+    app: attendance-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: attendance-service
+  template:
+    metadata:
+      labels:
+        app: attendance-service
+    spec:
+      containers:
+        - name: attendance-service
+          image: your-docker-image:latest
+          ports:
+            - containerPort: 3002
+          env:
+            - name: PORT
+              value: "3002"
+            - name: MONGODB_URI
+              value: "your-mongodb-uri"
+            - name: JWT_SECRET
+              value: "your-jwt-secret"
+            - name: NODE_ENV
+              value: "production"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/src/app/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: attendance-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: attendance-service
+  labels:
+    app: attendance-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3002
+      targetPort: 3002
+  selector:
+    app: attendance-service
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: attendance-service-config
+  labels:
+    app: attendance-service
+data:
+  config.json: |
+    {
+      "someConfig": "value"
+    }
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: attendance-service-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: attendance-service.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: attendance-service
+                port:
+                  number: 3002
