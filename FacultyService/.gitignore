@@ -1,0 +1,83 @@
+# Node.js dependencies
+node_modules/
+package-lock.json
+npm-debug.log*
+
+# Docker files
+*.dockerignore
+Dockerfile
+
+# Test coverage directories
+coverage/
+*.lcov
+*.lcov.info
+
+# Build outputs
+dist/
+build/
+.cache/
+.tmp/
+
+# Logs
+*.log
+logs/
+*.pid
+*.pid.lock
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Kubernetes configuration
+kubeconfig.yml
+kubeconfig.json
+
+# GitHub Actions
+.github/workflows/*.secrets
+
+# ESLint
+.eslintcache
+
+# Jest
+jest.config.js
+jest.config.cjs
+jest.config.mjs
+jest.config.ts
+.vscode-test
+
+# Temporary files and IDE configurations
+*.swp
+*.swo
+*~
+*.DS_Store
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Performance testing tools
+*.jmx  # Apache JMeter files
+*.csv  # Test data files
+*.json  # Test configuration files (if dynamic)
+
+# Security scanning tools
+zap-session.data
+*.zap
+zap-report.xml
+zap-output/
+
+# Docker Compose overrides
+docker-compose.override.yml
+docker-compose.override.*.yml
+
+# K6 Performance Testing
+*.k6.log
+k6-results/
+k6-output/
